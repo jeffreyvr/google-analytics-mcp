@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --ink: #000;
+    --muted: #6b6b6b;
+    --faint: #8d8d8d;
+    --soft: #f2f2f2;
+    --line: rgba(0,0,0,0.08);
+    --bad: #d00000;
+    --font: Inter, "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #000;
+    --ink: #fff;
+    --muted: #a1a1a6;
+    --faint: #6e6e73;
+    --soft: #1c1c1e;
+    --line: rgba(255,255,255,0.12);
+    --bad: #ff5c5c;
+  }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.45 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font: inherit; color: inherit; }
+  button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+  a { text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  ::selection { background: var(--ink); color: var(--bg); }
+
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar button {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .bar button.on {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .bar .gap { flex: 1; }
+
+  .stage {
+    width: min(640px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 12vh 0 80px;
+    text-align: center;
+  }
+  html[data-variant="c"] .stage {
+    width: min(480px, calc(100% - 40px));
+    padding-top: 8vh;
+    text-align: left;
+  }
+  .kicker {
+    margin: 0 0 20px;
+    color: var(--faint);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .map {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
+    margin: 0 0 28px;
+  }
+  .map button {
+    color: var(--faint);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .map button.on { color: var(--ink); font-weight: 600; }
+  .map button:hover { color: var(--ink); }
+  h1 {
+    margin: 0 auto;
+    max-width: 12em;
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  .sub {
+    margin: 16px auto 0;
+    max-width: 34em;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.45;
+  }
+  .sub a { color: var(--ink); font-weight: 500; }
+  .sub a:hover { opacity: 0.6; }
+  .mono {
+    margin: 22px auto 0;
+    max-width: 36em;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+  html[data-variant="a"] .mono,
+  html[data-variant="b"] .mono { text-align: center; }
+  .status {
+    margin: 22px auto 0;
+    max-width: 28em;
+    display: grid;
+    gap: 8px;
+  }
+  .status div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .bad { color: var(--bad); font-weight: 600; }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  html[data-variant="c"] .row { justify-content: flex-start; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--soft);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .pill:hover { opacity: 0.82; }
+  .pill.solid {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  html[data-variant="c"] .links { justify-content: flex-start; }
+  .foot {
+    margin-top: 64px;
+    color: var(--faint);
+    font-size: 13px;
+  }
+  html[data-variant="b"] h1 { display: none; }
+  html[data-variant="b"] .sub {
+    margin-top: 0;
+    color: var(--ink);
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+  .list { display: grid; }
+  .list .name {
+    display: block;
+    width: 100%;
+    padding: 18px 0 8px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--faint);
+  }
+  .list .item.on .name { color: var(--ink); }
+  .list .body { padding: 0 0 8px; }
+  .list .sub { margin: 0; font-size: 16px; }
+  .list .mono, .list .status { margin-left: 0; margin-right: 0; }
+  @media (max-width: 640px) {
+    h1 { font-size: 40px; }
+    .stage { padding-top: 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <button type="button" data-variant="a">A Hero</button>
+  <button type="button" data-variant="b">B Flat</button>
+  <button type="button" data-variant="c">C List</button>
+  <span class="gap"></span>
+  <button type="button" data-theme="light">Light</button>
+  <button type="button" data-theme="dark">Dark</button>
+</div>
+<main class="stage" id="stage"></main>
+<script>
+const CALLBACK = "https://google-analytics-mcp.jeffrey-d48.workers.dev/callback";
+const MCP = "https://google-analytics-mcp.jeffrey-d48.workers.dev/mcp";
+const LINKS = {
+  oauth: "https://console.cloud.google.com/auth/clients",
+  classic: "https://console.cloud.google.com/apis/credentials",
+  scopes: "https://console.cloud.google.com/auth/scopes",
+  audience: "https://console.cloud.google.com/auth/audience",
+  data: "https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com",
+  admin: "https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com",
+  search: "https://console.cloud.google.com/apis/library/searchconsole.googleapis.com",
+};
+const NAMES = ["Redirect", "Scopes", "APIs", "Secrets", "Connect"];
+const SCOPES = `openid
+https://www.googleapis.com/auth/userinfo.email
+https://www.googleapis.com/auth/analytics.readonly
+https://www.googleapis.com/auth/webmasters.readonly`;
+const COMMAND = "npx wrangler secret put GOOGLE_CLIENT_SECRET";
+
+const state = {
+  variant: "a",
+  theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+  index: 0,
+};
+
+function pill(label, className, attrs) {
+  const solid = className === "solid" ? " solid" : "";
+  return `<button type="button" class="pill${solid}" ${attrs}>${label}</button>`;
+}
+
+function link(href, label, solid) {
+  return `<a class="pill${solid ? " solid" : ""}" href="${href}" target="_blank" rel="noreferrer">${label}</a>`;
+}
+
+function map() {
+  return `<nav class="map" aria-label="Steps">${NAMES.map((name, i) => {
+    const on = i === state.index ? " on" : "";
+    const current = i === state.index ? ' aria-current="step"' : "";
+    return `<button type="button" class="${on.trim()}" data-go="${i}"${current}>${name}</button>`;
+  }).join("")}</nav>`;
+}
+
+function controls(step) {
+  const bits = [];
+  if (step.copy) bits.push(pill(step.copy, step.copySolid ? "solid" : "", `data-copy="${step.copyValue}"`));
+  (step.links || []).forEach((item) => {
+    bits.push(link(item.href, item.label, item.solid));
+  });
+  if (state.index < NAMES.length - 1 && step.next !== false) {
+    bits.push(pill("Next", step.nextSolid ? "solid" : "", 'data-move="1"'));
+  }
+  return `<div class="row">${bits.join("")}</div>`;
+}
+
+function steps() {
+  return [
+    {
+      title: "Paste this URI.",
+      sub: `Create a <a href="${LINKS.oauth}" target="_blank" rel="noreferrer">Web application OAuth client</a> and use this exact URI. <a href="${LINKS.classic}" target="_blank" rel="noreferrer">Classic credentials</a> if that page is missing.`,
+      mono: CALLBACK,
+      copy: "Copy",
+      copySolid: true,
+      copyValue: CALLBACK,
+    },
+    {
+      title: "Add these scopes.",
+      sub: `On the Data access page. Set the consent screen to <a href="${LINKS.audience}" target="_blank" rel="noreferrer">In production</a>. Testing expires refresh tokens after 7 days.`,
+      mono: SCOPES,
+      links: [{ href: LINKS.scopes, label: "Open scopes", solid: true }],
+      nextSolid: false,
+    },
+    {
+      title: "Enable three APIs.",
+      sub: "Same Google Cloud project.",
+      links: [
+        { href: LINKS.data, label: "Analytics Data" },
+        { href: LINKS.admin, label: "Analytics Admin" },
+        { href: LINKS.search, label: "Search Console" },
+      ],
+      nextSolid: true,
+    },
+    {
+      title: "One secret is missing.",
+      sub: "GOOGLE_CLIENT_ID is set. Reload after you set the secret. Any Google account can sign in until you set HOSTED_DOMAIN.",
+      status: `<div class="status"><div><span>GOOGLE_CLIENT_ID</span><span>Set</span></div><div><span>GOOGLE_CLIENT_SECRET</span><span class="bad">Missing</span></div></div>`,
+      mono: COMMAND,
+      copy: "Copy",
+      copySolid: true,
+      copyValue: COMMAND,
+    },
+    {
+      title: "Paste the MCP URL.",
+      sub: "Claude, Cursor, or Grok Bot. Leave Client ID blank. It registers itself.",
+      mono: MCP,
+      copy: "Copy",
+      copySolid: true,
+      copyValue: MCP,
+      next: false,
+    },
+  ];
+}
+
+function bodyOf(step) {
+  return `
+    <p class="sub">${step.sub}</p>
+    ${step.status || ""}
+    ${step.mono ? `<p class="mono">${step.mono}</p>` : ""}
+    ${step.links && step.links.length > 1 ? `<div class="links">${step.links.map((item) => link(item.href, item.label)).join("")}</div>` : ""}
+    ${controls(step.links && step.links.length > 1 ? { ...step, links: [] } : step)}
+  `;
+}
+
+function hero() {
+  const step = steps()[state.index];
+  return `
+    <p class="kicker">Step ${state.index + 1} of ${NAMES.length}</p>
+    ${map()}
+    <h1>${step.title}</h1>
+    ${bodyOf(step)}
+    <p class="foot">Unofficial, not affiliated with Google.</p>
+  `;
+}
+
+function list() {
+  const all = steps();
+  const items = NAMES.map((name, i) => {
+    const open = i === state.index;
+    const body = open ? `<div class="body">${bodyOf(all[i])}</div>` : "";
+    return `<div class="item${open ? " on" : ""}"><button type="button" class="name" data-go="${i}">${i + 1} ${name}</button>${body}</div>`;
+  }).join("");
+  return `
+    <p class="kicker">Step ${state.index + 1} of ${NAMES.length}</p>
+    <div class="list">${items}</div>
+    <p class="foot">Unofficial, not affiliated with Google.</p>
+  `;
+}
+
+function render() {
+  document.documentElement.dataset.theme = state.theme;
+  document.documentElement.dataset.variant = state.variant;
+  document.querySelectorAll("[data-variant]").forEach((button) => {
+    button.classList.toggle("on", button.dataset.variant === state.variant);
+  });
+  document.querySelectorAll("[data-theme]").forEach((button) => {
+    button.classList.toggle("on", button.dataset.theme === state.theme);
+  });
+  document.getElementById("stage").innerHTML = state.variant === "c" ? list() : hero();
+}
+
+document.body.addEventListener("click", async (event) => {
+  const variant = event.target.closest("[data-variant]");
+  if (variant && event.target.closest(".bar")) {
+    state.variant = variant.dataset.variant;
+    render();
+    return;
+  }
+  const theme = event.target.closest("[data-theme]");
+  if (theme && event.target.closest(".bar")) {
+    state.theme = theme.dataset.theme;
+    render();
+    return;
+  }
+  const go = event.target.closest("[data-go]");
+  if (go) {
+    state.index = Number(go.dataset.go);
+    render();
+    return;
+  }
+  const move = event.target.closest("[data-move]");
+  if (move) {
+    state.index = Math.max(0, Math.min(NAMES.length - 1, state.index + Number(move.dataset.move)));
+    render();
+    return;
+  }
+  const copy = event.target.closest("[data-copy]");
+  if (copy) {
+    const previous = copy.textContent;
+    try {
+      await navigator.clipboard.writeText(copy.dataset.copy);
+      copy.textContent = "Copied";
+    } catch {
+      copy.textContent = "Copy failed";
+    }
+    setTimeout(() => { copy.textContent = previous; }, 1200);
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "1") state.variant = "a";
+  else if (event.key === "2") state.variant = "b";
+  else if (event.key === "3") state.variant = "c";
+  else if (event.key === "ArrowRight") state.index = Math.min(NAMES.length - 1, state.index + 1);
+  else if (event.key === "ArrowLeft") state.index = Math.max(0, state.index - 1);
+  else return;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
