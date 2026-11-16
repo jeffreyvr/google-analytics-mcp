@@ -1,0 +1,50 @@
+{
+  "name": "google-analytics-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted remote MCP server for Google Analytics 4 and Google Search Console, running on Cloudflare Workers.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8794",
+    "start": "wrangler dev --port 8794",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "cf-typegen": "wrangler types"
+  },
+  "cloudflare": {
+    "bindings": {
+      "GOOGLE_CLIENT_ID": {
+        "description": "OAuth client ID from Google Cloud. Create a Web application client at https://console.cloud.google.com/auth/clients and add the redirect URI shown on this Worker's home page."
+      },
+      "GOOGLE_CLIENT_SECRET": {
+        "description": "Client secret for that same Google OAuth client."
+      },
+      "OAUTH_KV": {
+        "description": "KV namespace for OAuth grants. Google refresh tokens are stored encrypted inside it by workers-oauth-provider. A new namespace is created during deploy."
+      },
+      "HOSTED_DOMAIN": {
+        "description": "Optional. A Google Workspace domain (example.com) to restrict sign-in. Leave blank to allow any Google account."
+      },
+      "MCP_RESOURCE": {
+        "description": "Optional. Full MCP URL, such as https://google-analytics-mcp.<account>.workers.dev/mcp. Leave blank to use the host of each request."
+      }
+    }
+  },
+  "dependencies": {
+    "@cloudflare/workers-oauth-provider": "^1.2.4",
+    "@modelcontextprotocol/server": "2.3.1",
+    "agents": "^0.29.0",
+    "hono": "^4.12.27",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "@types/node": "^22.20.5",
+    "typescript": "~5.9.0",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.105.0"
+  }
+}

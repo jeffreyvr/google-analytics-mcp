@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "google-analytics-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-11",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  },
+  // Leave MCP_RESOURCE blank unless the public URL differs from the Host
+  // header the Worker sees. Tokens are bound to this URL when it is set.
+  "vars": {
+    "HOSTED_DOMAIN": "",
+    "MCP_RESOURCE": ""
+  },
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "5df2f1bea5cf46149f7547b78ca934c3"
+    }
+  ],
+  "secrets": {
+    "required": ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"]
+  },
+  "dev": {
+    "port": 8794
+  },
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.html"],
+      "fallthrough": true
+    }
+  ]
+}
